@@ -1,6 +1,29 @@
 import streamlit as st
 from textblob import TextBlob
 
+# Custom CSS for styling
+st.markdown(
+    """
+    <style>
+    body {
+        background-color: #f4f4f9;  /* Background color */
+        color: #333333;  /* Text color */
+    }
+    .sidebar .sidebar-content {
+        background-color: #cccccc;  /* Sidebar background */
+    }
+    .stButton>button {
+        background-color: #007bff;  /* Button color */
+        color: white;  /* Button text color */
+    }
+    .stTextInput>div>input {
+        background-color: #ffffff;  /* Text input background */
+        color: #333333;  /* Text input text color */
+    }
+    </style>
+    """, unsafe_allow_html=True
+)
+
 # Set page config to make it more chat-like
 st.set_page_config(page_title="Assistify", layout="wide")
 
@@ -96,61 +119,3 @@ for sender, message in st.session_state["chat_history"]:
 # Input field at the bottom
 with st.container():
     user_input = st.text_input("Type your message here:", key="new_query", label_visibility="collapsed")
-
-# Add custom CSS for the color scheme
-st.markdown(
-    """
-    <style>
-    body {
-        background-color: #f4f4f9;  /* Light gray background */
-        font-family: 'Arial', sans-serif;
-        color: #333333;  /* Dark gray text */
-    }
-
-    .sidebar .sidebar-content {
-        background-color: #ffffff;
-        padding: 15px;
-        font-family: 'Arial', sans-serif;
-        color: #333333;
-    }
-
-    .streamlit-expanderHeader {
-        font-size: 18px;
-        font-weight: bold;
-        color: #333333;
-    }
-
-    .streamlit-expanderContent {
-        font-size: 14px;
-        color: #555555;
-    }
-
-    .stButton>button {
-        background-color: #007bff;  /* Primary Blue for buttons */
-        color: white;
-        border-radius: 5px;
-    }
-
-    .stButton>button:hover {
-        background-color: #0056b3;  /* Darker blue on hover */
-    }
-
-    .stTextInput>div>input {
-        background-color: #ffffff;
-        border: 1px solid #cccccc;  /* Light gray border */
-        border-radius: 5px;
-    }
-
-    .stTextInput>div>input:focus {
-        border-color: #007bff;  /* Focus color - blue */
-    }
-
-    .stAlert {
-        background-color: #e74c3c;  /* Red for errors */
-        color: white;
-        font-weight: bold;
-    }
-
-    </style>
-    """, unsafe_allow_html=True
-)
