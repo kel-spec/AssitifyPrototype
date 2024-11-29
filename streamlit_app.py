@@ -44,7 +44,60 @@ def analyze_sentiment(text):
     else:
         return "neutral"
 
-# CSS styling for customization (Background color, font, etc.)
+# Streamlit app setup
+st.title("Assistify")
+st.subheader("Your personal shopping assistant!")
+
+# Initialize chat history if it doesn't exist
+if "chat_history" not in st.session_state:
+    st.session_state["chat_history"] = [("Assistify", "Hi! How can I help you today?")]
+
+# Process user input and update chat history
+if "new_query" in st.session_state:
+    user_query = st.session_state["new_query"]
+else:
+    user_query = ""
+
+if user_query:
+    response, sentiment = get_response(user_query)
+    
+    # Add user message and bot response to the chat history
+    st.session_state["chat_history"].append(("You", user_query))
+    st.session_state["chat_history"].append(("Bot", response))
+    st.session_state["chat_history"].append(("Sentiment", f"Sentiment: {sentiment.capitalize()}"))
+
+    # Clear the input box after submitting
+    st.session_state["new_query"] = ""
+
+# Sidebar for previous prompts with collapsible feature
+with st.sidebar:
+    st.markdown("## Assistify")  # App name in the sidebar
+    with st.expander("Previous Conversations"):
+        for i, (sender, message) in enumerate(st.session_state["chat_history"]):
+            if sender == "You":
+                st.markdown(f"**You:** {message}")
+            elif sender == "Bot":
+                st.markdown(f"**Bot:** {message}")
+            elif sender == "Sentiment":
+                st.markdown(f"*{message}*")
+
+# Main chat container
+st.markdown("")
+
+# Display chat history in main chat area
+for sender, message in st.session_state["chat_history"]:
+    if sender == "You":
+        st.markdown(f"**You:** {message}")
+    elif sender == "Bot":
+        st.markdown(f"**Bot:** {message}")
+    elif sender == "Sentiment":
+        st.markdown(f"*{message}*")
+
+# Input field at the bottom
+with st.container():
+    user_input = st.text_input("Type your message here:", key="new_query", label_visibility="collapsed")
+
+# Add custom CSS for the color scheme
 st.markdown(
     """
     <style>
@@ -101,55 +154,3 @@ st.markdown(
     </style>
     """, unsafe_allow_html=True
 )
-
-# Streamlit app setup
-st.title("Assistify")
-st.subheader("Your personal shopping assistant!")
-
-# Initialize chat history if it doesn't exist
-if "chat_history" not in st.session_state:
-    st.session_state["chat_history"] = [("Assistify", "Hi! How can I help you today?")]
-
-# Process user input and update chat history
-if "new_query" in st.session_state:
-    user_query = st.session_state["new_query"]
-else:
-    user_query = ""
-
-if user_query:
-    response, sentiment = get_response(user_query)
-    
-    # Add user message and bot response to the chat history
-    st.session_state["chat_history"].append(("You", user_query))
-    st.session_state["chat_history"].append(("Bot", response))
-    st.session_state["chat_history"].append(("Sentiment", f"Sentiment: {sentiment.capitalize()}"))
-
-    # Clear the input box after submitting
-    st.session_state["new_query"] = ""
-
-# Sidebar for previous prompts with collapsible feature
-with st.sidebar:
-    st.markdown("## Assistify")  # App name in the sidebar
-    with st.expander("Previous Conversations"):
-        for i, (sender, message) in enumerate(st.session_state["chat_history"]):
-            if sender == "You":
-                st.markdown(f"**You:** {message}")
-            elif sender == "Bot":
-                st.markdown(f"**Bot:** {message}")
-            elif sender == "Sentiment":
-                st.markdown(f"*{message}*")
-
-# Main chat container
-st.markdown("")
-# Display chat history in main chat area
-for sender, message in st.session_state["chat_history"]:
-    if sender == "You":
-        st.markdown(f"**You:** {message}")
-    elif sender == "Bot":
-        st.markdown(f"**Bot:** {message}")
-    elif sender == "Sentiment":
-        st.markdown(f"*{message}*")
-
-# Input field at the bottom
-with st.container():
-    user_input = st.text_input("Type your message here:", key="new_query", label_visibility="collapsed")
