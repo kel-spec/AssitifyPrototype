@@ -45,12 +45,12 @@ def analyze_sentiment(text):
         return "neutral"
 
 # Streamlit app setup
-st.title("Assistify - E-commerce Chatbot")
+st.title("Assistify")
 st.subheader("Your personal shopping assistant!")
 
 # Initialize chat history if it doesn't exist
 if "chat_history" not in st.session_state:
-    st.session_state["chat_history"] = [("Bot", "Hi! How can I help you today?")]
+    st.session_state["chat_history"] = [("Assistify", "Hi! How can I help you today?")]
 
 # Process user input and update chat history
 if "new_query" in st.session_state:
@@ -82,7 +82,7 @@ with st.sidebar:
                 st.markdown(f"*{message}*")
 
 # Main chat container
-st.markdown("### Conversation")
+st.markdown("")
 # Display chat history in main chat area
 for sender, message in st.session_state["chat_history"]:
     if sender == "You":
