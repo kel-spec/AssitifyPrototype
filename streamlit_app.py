@@ -4,29 +4,6 @@ from textblob import TextBlob
 # Set page config to make it more chat-like
 st.set_page_config(page_title="Assistify", layout="wide")
 
-# Custom CSS for styling
-st.markdown(
-    """
-    <style>
-    body {
-        background-color: #f4f4f9;  /* Background color */
-        color: #333333;  /* Text color */
-    }
-    .sidebar .sidebar-content {
-        background-color: #cccccc;  /* Sidebar background */
-    }
-    .stButton>button {
-        background-color: #007bff;  /* Button color */
-        color: white;  /* Button text color */
-    }
-    .stTextInput>div>input {
-        background-color: #ffffff;  /* Text input background */
-        color: #333333;  /* Text input text color */
-    }
-    </style>
-    """, unsafe_allow_html=True
-)
-
 # Define chatbot responses
 responses = {
     "greeting": "Hello! How can I assist you with your shopping today?",
