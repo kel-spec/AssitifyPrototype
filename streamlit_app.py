@@ -69,27 +69,28 @@ if user_query:
     # Clear the input box after submitting
     st.session_state["new_query"] = ""
 
-# Layout with Header for expandable sections
-st.markdown("---")
+# Layout with Sidebar for previous prompts and the main conversation
+col1, col2 = st.columns([1, 3])
 
-# Create expandable sections in the header
-with st.expander("Previous Prompts (Click to Expand)", expanded=False):
+# Sidebar for previous prompts
+with col1:
+    st.markdown("### Previous Prompts")
     for i, (sender, message) in enumerate(st.session_state["chat_history"]):
         if sender == "You":
             st.button(message, key=f"btn_{i}", on_click=lambda m=message: st.session_state.update(new_query=m))
 
-with st.expander("Write New Prompt (Click to Expand)", expanded=False):
-    user_input = st.text_input("Type your message here:", key="new_query", label_visibility="collapsed")
-
 # Main chat container
-st.markdown("---")
-st.markdown("### Conversation")
+with col2:
+    st.markdown("### Conversation")
+    # Display chat history
+    for sender, message in st.session_state["chat_history"]:
+        if sender == "You":
+            st.markdown(f"**You:** {message}")
+        elif sender == "Bot":
+            st.markdown(f"**Bot:** {message}")
+        elif sender == "Sentiment":
+            st.markdown(f"*{message}*")
 
-# Display chat history
-for sender, message in st.session_state["chat_history"]:
-    if sender == "You":
-        st.markdown(f"**You:** {message}")
-    elif sender == "Bot":
-        st.markdown(f"**Bot:** {message}")
-    elif sender == "Sentiment":
-        st.markdown(f"*{message}*")
+# Input field at the bottom
+with st.container():
+    user_input = st.text_input("Type your message here:", key="new_query", label_visibility="collapsed")
