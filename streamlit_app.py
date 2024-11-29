@@ -1,4 +1,3 @@
-import time
 import streamlit as st
 from textblob import TextBlob
 
@@ -60,21 +59,12 @@ else:
     user_query = ""
 
 if user_query:
-    # Add the "thinking" animation
-    st.session_state["chat_history"].append(("Bot", "Thinking..."))
-    
-    # Simulate delay for the bot response (3-5 seconds)
-    time.sleep(3)  # Adjust time for the desired delay
-    
     response, sentiment = get_response(user_query)
     
-    # Remove "Thinking..." and show the actual response
-    st.session_state["chat_history"].pop()
+    # Add user message and bot response to the chat history
+    st.session_state["chat_history"].append(("You", user_query))
     st.session_state["chat_history"].append(("Bot", response))
     st.session_state["chat_history"].append(("Sentiment", f"Sentiment: {sentiment.capitalize()}"))
-    
-    # Add user message to the chat history
-    st.session_state["chat_history"].append(("You", user_query))
 
     # Clear the input box after submitting
     st.session_state["new_query"] = ""
