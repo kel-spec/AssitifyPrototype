@@ -69,27 +69,28 @@ if user_query:
     # Clear the input box after submitting
     st.session_state["new_query"] = ""
 
-# Layout with Sidebar for previous prompts and the main conversation
-col1, col2 = st.columns([1, 3])
-
-# Sidebar for previous prompts
-with col1:
-    st.markdown("### Previous Prompts")
-    for i, (sender, message) in enumerate(st.session_state["chat_history"]):
-        if sender == "You":
-            st.button(message, key=f"btn_{i}", on_click=lambda m=message: st.session_state.update(new_query=m))
+# Sidebar for previous prompts with collapsible feature
+with st.sidebar:
+    st.markdown("## Assistify")  # App name in the sidebar
+    with st.expander("Previous Conversations"):
+        for i, (sender, message) in enumerate(st.session_state["chat_history"]):
+            if sender == "You":
+                st.markdown(f"**You:** {message}")
+            elif sender == "Bot":
+                st.markdown(f"**Bot:** {message}")
+            elif sender == "Sentiment":
+                st.markdown(f"*{message}*")
 
 # Main chat container
-with col2:
-    st.markdown("### Conversation")
-    # Display chat history
-    for sender, message in st.session_state["chat_history"]:
-        if sender == "You":
-            st.markdown(f"**You:** {message}")
-        elif sender == "Bot":
-            st.markdown(f"**Bot:** {message}")
-        elif sender == "Sentiment":
-            st.markdown(f"*{message}*")
+st.markdown("### Conversation")
+# Display chat history in main chat area
+for sender, message in st.session_state["chat_history"]:
+    if sender == "You":
+        st.markdown(f"**You:** {message}")
+    elif sender == "Bot":
+        st.markdown(f"**Bot:** {message}")
+    elif sender == "Sentiment":
+        st.markdown(f"*{message}*")
 
 # Input field at the bottom
 with st.container():
