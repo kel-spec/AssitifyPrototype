@@ -79,10 +79,10 @@ if user_query:
     # Get the bot's response after the delay
     response, sentiment = get_response(user_query)
 
-    # Display the final response
-    bot_message.markdown(f"**Bot:** {response}")
-    st.session_state["chat_history"].append(("Bot", response))
-    st.session_state["chat_history"].append(("Sentiment", f"Sentiment: {sentiment.capitalize()}"))
+    # Add bot response and sentiment only if not already added
+    if not any(msg[1] == response for msg in st.session_state["chat_history"]):
+        st.session_state["chat_history"].append(("Bot", response))
+        st.session_state["chat_history"].append(("Sentiment", f"Sentiment: {sentiment.capitalize()}"))
 
     # Clear the input box after submitting
     st.session_state["new_query"] = ""
