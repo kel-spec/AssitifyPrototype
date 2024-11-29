@@ -2,7 +2,7 @@ import streamlit as st
 from textblob import TextBlob
 
 # Set page config to make it more chat-like
-st.set_page_config(page_title="Assistify - E-commerce Chatbot", layout="centered")
+st.set_page_config(page_title="Assistify", layout="centered")
 
 # Add custom CSS for styling
 st.markdown("""
