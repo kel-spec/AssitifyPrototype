@@ -79,6 +79,9 @@ if user_query:
     # Get the bot's response after the delay
     response, sentiment = get_response(user_query)
 
+    # Clear the thinking animation
+    bot_message.empty()
+
     # Add bot response and sentiment only if not already added
     if not any(msg[1] == response for msg in st.session_state["chat_history"]):
         st.session_state["chat_history"].append(("Bot", response))
