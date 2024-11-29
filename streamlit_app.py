@@ -2,7 +2,7 @@ import streamlit as st
 from textblob import TextBlob
 
 # Set page config to make it more chat-like
-st.set_page_config(page_title="Assistify - E-commerce Chatbot", layout="wide")
+st.set_page_config(page_title="Assistify", layout="wide")
 
 # Define chatbot responses
 responses = {
@@ -43,6 +43,58 @@ def analyze_sentiment(text):
         return "negative"
     else:
         return "neutral"
+
+# CSS styling for customization (Background color, font, etc.)
+st.markdown(
+    """
+    <style>
+    body {
+        background-color: #f4f4f9;  /* Background color */
+        font-family: 'Arial', sans-serif;  /* Font */
+        color: #333333;  /* Font color */
+    }
+
+    .sidebar .sidebar-content {
+        background-color: #ffffff;
+        padding: 15px;
+        font-family: 'Arial', sans-serif;
+        color: #333333;
+    }
+
+    .streamlit-expanderHeader {
+        font-size: 18px;
+        font-weight: bold;
+        color: #333333;
+    }
+
+    .streamlit-expanderContent {
+        font-size: 14px;
+        color: #555555;
+    }
+
+    .stButton>button {
+        background-color: #007bff;
+        color: white;
+        border-radius: 5px;
+    }
+
+    .stButton>button:hover {
+        background-color: #0056b3;
+    }
+
+    .stTextInput>div>input {
+        background-color: #ffffff;
+        border: 1px solid #cccccc;
+        border-radius: 5px;
+    }
+
+    .stTextInput>div>input:focus {
+        border-color: #007bff;
+    }
+
+    </style>
+    """, unsafe_allow_html=True
+)
 
 # Streamlit app setup
 st.title("Assistify")
