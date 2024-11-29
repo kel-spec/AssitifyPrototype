@@ -49,9 +49,9 @@ st.markdown(
     """
     <style>
     body {
-        background-color: #f4f4f9;  /* Background color */
-        font-family: 'Arial', sans-serif;  /* Font */
-        color: #333333;  /* Font color */
+        background-color: #f4f4f9;  /* Light gray background */
+        font-family: 'Arial', sans-serif;
+        color: #333333;  /* Dark gray text */
     }
 
     .sidebar .sidebar-content {
@@ -73,23 +73,29 @@ st.markdown(
     }
 
     .stButton>button {
-        background-color: #007bff;
+        background-color: #007bff;  /* Primary Blue for buttons */
         color: white;
         border-radius: 5px;
     }
 
     .stButton>button:hover {
-        background-color: #0056b3;
+        background-color: #0056b3;  /* Darker blue on hover */
     }
 
     .stTextInput>div>input {
         background-color: #ffffff;
-        border: 1px solid #cccccc;
+        border: 1px solid #cccccc;  /* Light gray border */
         border-radius: 5px;
     }
 
     .stTextInput>div>input:focus {
-        border-color: #007bff;
+        border-color: #007bff;  /* Focus color - blue */
+    }
+
+    .stAlert {
+        background-color: #e74c3c;  /* Red for errors */
+        color: white;
+        font-weight: bold;
     }
 
     </style>
