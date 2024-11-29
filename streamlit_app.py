@@ -63,7 +63,7 @@ if user_query:
     
     # Add user message and bot response to the chat history
     st.session_state["chat_history"].append(("You", user_query))
-    st.session_state["chat_history"].append(("Bot", response))
+    st.session_state["chat_history"].append(("Assistify", response))
     st.session_state["chat_history"].append(("Sentiment", f"Sentiment: {sentiment.capitalize()}"))
 
     # Clear the input box after submitting
