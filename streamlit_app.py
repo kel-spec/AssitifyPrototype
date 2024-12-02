@@ -18,6 +18,7 @@ responses = {
 }
 
 # Function to get chatbot response based on user input
+# Function to get chatbot response based on user input
 def get_response(user_input):
     user_input = user_input.lower()
     sentiment = analyze_sentiment(user_input)
@@ -30,9 +31,15 @@ def get_response(user_input):
         return responses["return"], sentiment
     elif "shipping" in user_input:
         return responses["shipping"], sentiment
+    elif sentiment == "positive":
+        return responses["positive_feedback"], sentiment
+    elif sentiment == "negative":
+        return responses["negative_feedback"], sentiment
+    elif sentiment == "neutral":
+        return responses["neutral_feedback"], sentiment
     else:
         return responses["default"], sentiment
-
+        
 # Function to analyze sentiment using TextBlob
 def analyze_sentiment(text):
     blob = TextBlob(text)
