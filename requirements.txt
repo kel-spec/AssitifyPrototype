@@ -1,3 +1,2 @@
 streamlit
 vaderSentiment
-sqlite3
