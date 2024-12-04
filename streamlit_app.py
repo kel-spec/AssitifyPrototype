@@ -1,28 +1,9 @@
 import time
 import streamlit as st
-from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
-import sqlite3
+from textblob import TextBlob
 
 # Set page config to make it more chat-like
 st.set_page_config(page_title="Assistify 🛒", layout="wide")
-
-# Initialize VADER sentiment analyzer
-analyzer = SentimentIntensityAnalyzer()
-
-# Database connection setup
-conn = sqlite3.connect("chat_history.db")
-cursor = conn.cursor()
-
-# Create table if not exists
-cursor.execute("""
-    CREATE TABLE IF NOT EXISTS chat_history (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        sender TEXT,
-        message TEXT,
-        timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    )
-""")
-conn.commit()
 
 # Define chatbot responses
 responses = {
@@ -36,18 +17,7 @@ responses = {
     "default": "I'm sorry, I didn't quite understand that. Can you please rephrase?",
 }
 
-# Function to analyze sentiment using VADER
-def analyze_sentiment(text):
-    sentiment_scores = analyzer.polarity_scores(text)
-    compound_score = sentiment_scores["compound"]
-    
-    if compound_score > 0.2:
-        return "positive"
-    elif compound_score < -0.2:
-        return "negative"
-    else:
-        return "neutral"
-
+# Function to get chatbot response based on user input
 # Function to get chatbot response based on user input
 def get_response(user_input):
     user_input = user_input.lower()
@@ -69,35 +39,80 @@ def get_response(user_input):
         return responses["neutral_feedback"], sentiment
     else:
         return responses["default"], sentiment
-
-# Save chat to database
-def save_to_db(sender, message):
-    cursor.execute("INSERT INTO chat_history (sender, message) VALUES (?, ?)", (sender, message))
-    conn.commit()
-
-# Load chat history from database
-def load_history():
-    cursor.execute("SELECT sender, message FROM chat_history")
-    return cursor.fetchall()
-
-# Display typing animation
-def display_typing(bot_message, text):
-    for i in range(len(text) + 1):
-        bot_message.markdown(f"**Bot:** {text[:i]}")
-        time.sleep(0.05)
-
-# Initialize session state variables
-if "new_query" not in st.session_state:
-    st.session_state["new_query"] = ""
-
-if "chat_history" not in st.session_state:
-    st.session_state["chat_history"] = [("Assistify", "Hi! How can I help you today?")]
+        
+# Function to analyze sentiment using TextBlob
+def analyze_sentiment(text):
+    blob = TextBlob(text)
+    sentiment_score = blob.sentiment.polarity  # Range: -1 (negative) to 1 (positive)
+    
+    if sentiment_score > 0.2:
+        return "positive"
+    elif sentiment_score < -0.2:
+        return "negative"
+    else:
+        return "neutral"
 
 # Streamlit app setup
 st.title("Assistify")
 st.subheader("Your personal shopping assistant!")
 
-# Load chat history
+# Initialize chat history if it doesn't exist
+if "chat_history" not in st.session_state:
+    st.session_state["chat_history"] = [("Assistify", "Hi! How can I help you today?")]
+
+# Process user input and update chat history
+if "new_query" in st.session_state:
+    user_query = st.session_state["new_query"]
+else:
+    user_query = ""
+
+if user_query:
+    # Add user message to the chat history
+    st.session_state["chat_history"].append(("You", user_query))
+    
+    # Placeholder for bot thinking animation
+    bot_message = st.empty()
+
+    # Display thinking animation ("Bot: . . .")
+    thinking_animation = ". . ."
+    for _ in range(3):  # Show dots animation, e.g., . . .
+        bot_message.markdown(f"**Bot:** {thinking_animation}")
+        time.sleep(1)  # Wait 1 second before adding another dot
+        thinking_animation += " ."
+
+    # Simulate delay for the bot response (3-5 seconds)
+    time.sleep(3)  # Adjust time for the desired delay
+
+    # Get the bot's response after the delay
+    response, sentiment = get_response(user_query)
+
+    # Clear the thinking animation
+    bot_message.empty()
+
+    # Add bot response and sentiment only if not already added
+    if not any(msg[1] == response for msg in st.session_state["chat_history"]):
+        st.session_state["chat_history"].append(("Bot", response))
+        st.session_state["chat_history"].append(("Sentiment", f"Sentiment: {sentiment.capitalize()}"))
+
+    # Clear the input box after submitting
+    st.session_state["new_query"] = ""
+
+# Sidebar for previous prompts with collapsible feature
+with st.sidebar:
+    st.markdown("## Assistify")  # App name in the sidebar
+    with st.expander("Previous Conversations"):
+        for i, (sender, message) in enumerate(st.session_state["chat_history"]):
+            if sender == "You":
+                st.markdown(f"**You:** {message}")
+            elif sender == "Bot":
+                st.markdown(f"**Bot:** {message}")
+            elif sender == "Sentiment":
+                st.markdown(f"*{message}*")
+
+# Main chat container
+st.markdown("")
+
+# Display chat history in main chat area
 for sender, message in st.session_state["chat_history"]:
     if sender == "You":
         st.markdown(f"**You:** {message}")
@@ -106,51 +121,6 @@ for sender, message in st.session_state["chat_history"]:
     elif sender == "Sentiment":
         st.markdown(f"*{message}*")
 
-# Input for user queries
+# Input field at the bottom
 with st.container():
     user_input = st.text_input("Type your message here:", key="new_query", label_visibility="collapsed")
-
-response, sentiment = None, None  # Initialize variables to avoid errors
-
-if user_input:
-    # Add user message to the chat history
-    st.session_state["chat_history"].append(("You", user_input))
-    save_to_db("You", user_input)
-
-    # Display bot typing animation
-    bot_message = st.empty()
-    display_typing(bot_message, "...")
-
-    # Get chatbot response
-    response, sentiment = get_response(user_input)
-    st.session_state["chat_history"].append(("Bot", response))
-    save_to_db("Bot", response)
-
-    # Display sentiment analysis result
-    sentiment_message = f"Sentiment: {sentiment.capitalize()}"
-    st.session_state["chat_history"].append(("Sentiment", sentiment_message))
-    save_to_db("Sentiment", sentiment_message)
-
-    # Clear input box safely
-    st.session_state["new_query"] = ""
-
-# Feedback feature
-if response:  # Check if response is defined
-    feedback = st.radio(
-        "Was this response helpful?",
-        ["Yes", "No"],
-        key=f"feedback_{len(st.session_state['chat_history'])}"
-    )
-    save_to_db("Feedback", feedback)
-
-# Sidebar for previous prompts
-with st.sidebar:
-    st.markdown("## Assistify")
-    with st.expander("Previous Conversations"):
-        for sender, message in st.session_state["chat_history"]:
-            if sender == "You":
-                st.markdown(f"**You:** {message}")
-            elif sender == "Bot":
-                st.markdown(f"**Bot:** {message}")
-            elif sender == "Sentiment":
-                st.markdown(f"*{message}*")
