@@ -86,15 +86,18 @@ def display_typing(bot_message, text):
         bot_message.markdown(f"**Bot:** {text[:i]}")
         time.sleep(0.05)
 
+# Initialize session state variables
+if "new_query" not in st.session_state:
+    st.session_state["new_query"] = ""
+
+if "chat_history" not in st.session_state:
+    st.session_state["chat_history"] = [("Assistify", "Hi! How can I help you today?")]
+
 # Streamlit app setup
 st.title("Assistify")
 st.subheader("Your personal shopping assistant!")
 
 # Load chat history
-if "chat_history" not in st.session_state:
-    st.session_state["chat_history"] = load_history()
-
-# Display chat history
 for sender, message in st.session_state["chat_history"]:
     if sender == "You":
         st.markdown(f"**You:** {message}")
@@ -139,7 +142,7 @@ if response:  # Check if response is defined
         key=f"feedback_{len(st.session_state['chat_history'])}"
     )
     save_to_db("Feedback", feedback)
-    
+
 # Sidebar for previous prompts
 with st.sidebar:
     st.markdown("## Assistify")
