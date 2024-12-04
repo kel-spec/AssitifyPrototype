@@ -131,7 +131,7 @@ if user_input:
     st.session_state["chat_history"].append(("Sentiment", sentiment_message))
     save_to_db("Sentiment", sentiment_message)
 
-    # Clear input box
+    # Clear input box safely
     st.session_state["new_query"] = ""
 
 # Feedback feature
