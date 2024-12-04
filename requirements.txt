@@ -1,2 +1,2 @@
 streamlit
-textblob
+vaderSentiment
