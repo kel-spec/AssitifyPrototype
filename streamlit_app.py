@@ -107,6 +107,8 @@ for sender, message in st.session_state["chat_history"]:
 with st.container():
     user_input = st.text_input("Type your message here:", key="new_query", label_visibility="collapsed")
 
+response, sentiment = None, None  # Initialize variables to avoid errors
+
 if user_input:
     # Add user message to the chat history
     st.session_state["chat_history"].append(("You", user_input))
@@ -115,12 +117,12 @@ if user_input:
     # Display bot typing animation
     bot_message = st.empty()
     display_typing(bot_message, "...")
-    
+
     # Get chatbot response
     response, sentiment = get_response(user_input)
     st.session_state["chat_history"].append(("Bot", response))
     save_to_db("Bot", response)
-    
+
     # Display sentiment analysis result
     sentiment_message = f"Sentiment: {sentiment.capitalize()}"
     st.session_state["chat_history"].append(("Sentiment", sentiment_message))
@@ -130,14 +132,14 @@ if user_input:
     st.session_state["new_query"] = ""
 
 # Feedback feature
-if response:
+if response:  # Check if response is defined
     feedback = st.radio(
         "Was this response helpful?",
         ["Yes", "No"],
         key=f"feedback_{len(st.session_state['chat_history'])}"
     )
     save_to_db("Feedback", feedback)
-
+    
 # Sidebar for previous prompts
 with st.sidebar:
     st.markdown("## Assistify")
