@@ -1,22 +1,18 @@
 import time
 import streamlit as st
-import joblib
-import os
-from textblob import TextBlob
+from transformers import pipeline
 
 # Set page config to make it more chat-like
 st.set_page_config(page_title="Assistify 🛒", layout="wide")
 
-# Load model and vectorizer
-model_path = "models/sentiment_model.pkl"
-vectorizer_path = "models/vectorizer.pkl"
+# Load BERT sentiment analysis pipeline from Hugging Face
+@st.cache_resource
+def load_bert_model():
+    # Load pre-trained BERT model for sentiment analysis
+    sentiment_analyzer = pipeline("sentiment-analysis")
+    return sentiment_analyzer
 
-try:
-    model = joblib.load(model_path)
-    vectorizer = joblib.load(vectorizer_path)
-    st.success("Model and vectorizer loaded successfully!")
-except FileNotFoundError:
-    st.error(f"Model or vectorizer files not found at {model_path} or {vectorizer_path}")
+sentiment_analyzer = load_bert_model()
 
 # Define chatbot responses
 responses = {
@@ -52,22 +48,16 @@ def get_response(user_input):
     else:
         return responses["default"], sentiment
 
-# Function to analyze sentiment using the loaded model and vectorizer
+# Function to analyze sentiment using BERT
 def analyze_sentiment(text):
-    # Transform the input text using the vectorizer
-    text_transformed = vectorizer.transform([text])
-
-    # Predict sentiment using the loaded model
-    sentiment_prediction = model.predict(text_transformed)
-
-    # Return sentiment label (positive, negative, or neutral)
-    if sentiment_prediction == 1:
+    result = sentiment_analyzer(text)
+    label = result[0]['label']  # 'LABEL_0' is negative, 'LABEL_1' is positive
+    if label == 'LABEL_1':  # Positive
         return "positive"
-    elif sentiment_prediction == 0:
+    elif label == 'LABEL_0':  # Negative
         return "negative"
     else:
-        return "neutral"
-
+        return "neutral"  # Default case for 'LABEL_2', or other cases if needed
 
 # Streamlit app setup
 st.title("Assistify")
@@ -87,12 +77,29 @@ if user_query:
     # Add user message to the chat history
     st.session_state["chat_history"].append(("You", user_query))
     
-    # Get the bot's response after a short delay (without animation)
+    # Placeholder for bot thinking animation
+    bot_message = st.empty()
+
+    # Display thinking animation ("Bot: . . .")
+    thinking_animation = ". . ."
+    for _ in range(3):  # Show dots animation, e.g., . . .
+        bot_message.markdown(f"**Bot:** {thinking_animation}")
+        time.sleep(1)  # Wait 1 second before adding another dot
+        thinking_animation += " ."
+
+    # Simulate delay for the bot response (3-5 seconds)
+    time.sleep(3)  # Adjust time for the desired delay
+
+    # Get the bot's response after the delay
     response, sentiment = get_response(user_query)
 
-    # Add bot response and sentiment to the chat history
-    st.session_state["chat_history"].append(("Bot", response))
-    st.session_state["chat_history"].append(("Sentiment", f"Sentiment: {sentiment.capitalize()}"))
+    # Clear the thinking animation
+    bot_message.empty()
+
+    # Add bot response and sentiment only if not already added
+    if not any(msg[1] == response for msg in st.session_state["chat_history"]):
+        st.session_state["chat_history"].append(("Bot", response))
+        st.session_state["chat_history"].append(("Sentiment", f"Sentiment: {sentiment.capitalize()}"))
 
     # Clear the input box after submitting
     st.session_state["new_query"] = ""
@@ -123,4 +130,4 @@ for sender, message in st.session_state["chat_history"]:
 
 # Input field at the bottom
 with st.container():
-    user_input = st.text_area("Type your message here:", key="new_query", label_visibility="collapsed")
+    user_input = st.text_input("Type your message here:", key="new_query", label_visibility="collapsed")
