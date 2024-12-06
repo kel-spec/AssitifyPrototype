@@ -67,6 +67,9 @@ st.subheader("Your personal shopping assistant!")
 if "chat_history" not in st.session_state:
     st.session_state["chat_history"] = [("Assistify", "Hi! How can I help you today?")]
 
+# Log current session state to debug
+st.write("Session State:", st.session_state)
+
 # Process user input and update chat history
 if "new_query" in st.session_state:
     user_query = st.session_state["new_query"]
@@ -115,3 +118,7 @@ for sender, message in st.session_state["chat_history"]:
 # Input field at the bottom
 with st.container():
     user_input = st.text_input("Type your message here:", key="new_query", label_visibility="collapsed")
+
+# Debugging check for user input
+if user_input:
+    st.write(f"User input: {user_input}")
