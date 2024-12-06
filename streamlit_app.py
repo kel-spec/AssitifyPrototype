@@ -1,9 +1,22 @@
 import time
 import streamlit as st
+import joblib
+import os
 from textblob import TextBlob
 
 # Set page config to make it more chat-like
 st.set_page_config(page_title="Assistify 🛒", layout="wide")
+
+# Load model and vectorizer
+model_path = "AssistifyPrototype/models/sentiment_model.pkl"
+vectorizer_path = "AssistifyPrototype/models/vectorizer.pkl"
+
+if os.path.exists(model_path) and os.path.exists(vectorizer_path):
+    model = joblib.load(model_path)
+    vectorizer = joblib.load(vectorizer_path)
+    st.success("Model and vectorizer loaded successfully!")
+else:
+    st.error(f"Error: Model or vectorizer files not found at {model_path} or {vectorizer_path}")
 
 # Define chatbot responses
 responses = {
@@ -17,7 +30,6 @@ responses = {
     "default": "I'm sorry, I didn't quite understand that. Can you please rephrase?",
 }
 
-# Function to get chatbot response based on user input
 # Function to get chatbot response based on user input
 def get_response(user_input):
     user_input = user_input.lower()
@@ -39,15 +51,18 @@ def get_response(user_input):
         return responses["neutral_feedback"], sentiment
     else:
         return responses["default"], sentiment
-        
-# Function to analyze sentiment using TextBlob
+
+# Function to analyze sentiment using the loaded model and vectorizer
 def analyze_sentiment(text):
-    blob = TextBlob(text)
-    sentiment_score = blob.sentiment.polarity  # Range: -1 (negative) to 1 (positive)
+    # Transform the input text using the vectorizer
+    text_transformed = vectorizer.transform([text])
     
-    if sentiment_score > 0.2:
+    # Predict sentiment using the model
+    sentiment_prediction = model.predict(text_transformed)
+    
+    if sentiment_prediction == 1:  # Assuming 1 is positive
         return "positive"
-    elif sentiment_score < -0.2:
+    elif sentiment_prediction == 0:  # Assuming 0 is negative
         return "negative"
     else:
         return "neutral"
