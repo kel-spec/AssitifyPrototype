@@ -8,8 +8,8 @@ from textblob import TextBlob
 st.set_page_config(page_title="Assistify 🛒", layout="wide")
 
 # Load model and vectorizer
-model_path = "AssistifyPrototype/models/sentiment_model.pkl"
-vectorizer_path = "AssistifyPrototype/models/vectorizer.pkl"
+model_path = "models/sentiment_model.pkl"
+vectorizer_path = "models/vectorizer.pkl"
 
 if os.path.exists(model_path) and os.path.exists(vectorizer_path):
     model = joblib.load(model_path)
