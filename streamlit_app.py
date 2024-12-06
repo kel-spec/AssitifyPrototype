@@ -30,7 +30,8 @@ responses = {
 def get_response(user_input):
     user_input = user_input.lower()
     sentiment = analyze_sentiment(user_input)
-    
+
+    # Check for specific intents (keywords)
     if "hello" in user_input or "hi" in user_input:
         return responses["greeting"], sentiment
     elif "payment" in user_input:
@@ -39,15 +40,17 @@ def get_response(user_input):
         return responses["return"], sentiment
     elif "shipping" in user_input:
         return responses["shipping"], sentiment
+    # Handle sentiment-based feedback
     elif sentiment == "positive":
         return responses["positive_feedback"], sentiment
     elif sentiment == "negative":
         return responses["negative_feedback"], sentiment
     elif sentiment == "neutral":
         return responses["neutral_feedback"], sentiment
+    # Default response if no keyword matches
     else:
         return responses["default"], sentiment
-
+        
 # Function to analyze sentiment using BERT
 def analyze_sentiment(text):
     result = sentiment_analyzer(text)
