@@ -11,6 +11,13 @@ st.set_page_config(page_title="Assistify 🛒", layout="wide")
 model_path = "models/sentiment_model.pkl"
 vectorizer_path = "models/vectorizer.pkl"
 
+try:
+    model = joblib.load(model_path)
+    vectorizer = joblib.load(vectorizer_path)
+    st.success("Model and vectorizer loaded successfully!")
+except FileNotFoundError:
+    st.error(f"Model or vectorizer files not found at {model_path} or {vectorizer_path}")
+
 # Define chatbot responses
 responses = {
     "greeting": "Hello! How can I assist you with your shopping today?",
@@ -49,16 +56,18 @@ def get_response(user_input):
 def analyze_sentiment(text):
     # Transform the input text using the vectorizer
     text_transformed = vectorizer.transform([text])
-    
-    # Predict sentiment using the model
+
+    # Predict sentiment using the loaded model
     sentiment_prediction = model.predict(text_transformed)
-    
-    if sentiment_prediction == 1:  # Assuming 1 is positive
+
+    # Return sentiment label (positive, negative, or neutral)
+    if sentiment_prediction == 1:
         return "positive"
-    elif sentiment_prediction == 0:  # Assuming 0 is negative
+    elif sentiment_prediction == 0:
         return "negative"
     else:
         return "neutral"
+
 
 # Streamlit app setup
 st.title("Assistify")
