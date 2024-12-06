@@ -1,2 +1,4 @@
 streamlit
 textblob
+scikit-learn
+joblib
