@@ -77,24 +77,8 @@ if user_query:
     # Add user message to the chat history
     st.session_state["chat_history"].append(("You", user_query))
     
-    # Placeholder for bot thinking animation
-    bot_message = st.empty()
-
-    # Display thinking animation ("Bot: . . .")
-    thinking_animation = ". . ."
-    for _ in range(3):  # Show dots animation, e.g., . . .
-        bot_message.markdown(f"**Bot:** {thinking_animation}")
-        time.sleep(1)  # Wait 1 second before adding another dot
-        thinking_animation += " ."
-
-    # Simulate delay for the bot response (3-5 seconds)
-    time.sleep(3)  # Adjust time for the desired delay
-
-    # Get the bot's response after the delay
+    # Get the bot's response
     response, sentiment = get_response(user_query)
-
-    # Clear the thinking animation
-    bot_message.empty()
 
     # Add bot response and sentiment only if not already added
     if not any(msg[1] == response for msg in st.session_state["chat_history"]):
