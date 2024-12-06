@@ -11,13 +11,6 @@ st.set_page_config(page_title="Assistify 🛒", layout="wide")
 model_path = "models/sentiment_model.pkl"
 vectorizer_path = "models/vectorizer.pkl"
 
-if os.path.exists(model_path) and os.path.exists(vectorizer_path):
-    model = joblib.load(model_path)
-    vectorizer = joblib.load(vectorizer_path)
-    st.success("Model and vectorizer loaded successfully!")
-else:
-    st.error(f"Error: Model or vectorizer files not found at {model_path} or {vectorizer_path}")
-
 # Define chatbot responses
 responses = {
     "greeting": "Hello! How can I assist you with your shopping today?",
