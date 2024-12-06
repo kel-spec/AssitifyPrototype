@@ -62,8 +62,19 @@ def analyze_sentiment(text):
 st.title("Assistify")
 st.subheader("Your personal shopping assistant!")
 
-# Initialize chat history if it doesn't exist
+# Initialize the session state for conversation history
 if "chat_history" not in st.session_state:
+    st.session_state["chat_history"] = [("Assistify", "Hi! How can I help you today?")]
+    
+# Initialize previous conversations list in session state
+if "previous_conversations" not in st.session_state:
+    st.session_state["previous_conversations"] = []
+
+# Function to start a new conversation
+def start_new_conversation():
+    # Save current conversation to previous conversations
+    st.session_state["previous_conversations"].append(list(st.session_state["chat_history"]))
+    # Clear current conversation history
     st.session_state["chat_history"] = [("Assistify", "Hi! How can I help you today?")]
 
 # Capture the new user input
@@ -89,14 +100,18 @@ if user_query:
 # Sidebar for previous prompts with collapsible feature
 with st.sidebar:
     st.markdown("## Assistify")  # App name in the sidebar
+    st.markdown("### Previous Conversations")
+    
+    # Button to start a new conversation
+    if st.button("Start New Conversation"):
+        start_new_conversation()
+    
+    # Display previous conversations as clickable items
     with st.expander("Previous Conversations"):
-        for i, (sender, message) in enumerate(st.session_state["chat_history"]):
-            if sender == "You":
-                st.markdown(f"**You:** {message}")
-            elif sender == "Bot":
-                st.markdown(f"**Bot:** {message}")
-            elif sender == "Sentiment":
-                st.markdown(f"*{message}*")
+        for idx, conversation in enumerate(st.session_state["previous_conversations"]):
+            if st.button(f"Conversation {idx + 1}", key=f"conv_{idx}"):
+                # Load selected conversation into chat history
+                st.session_state["chat_history"] = conversation
 
 # Main chat container
 st.markdown("")
