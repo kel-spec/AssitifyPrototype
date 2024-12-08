@@ -45,35 +45,27 @@ responses = {
     "greeting": "Hello! Here's a list of questions you can ask me: Payment, Return, Shipping, Order Status.",
     "greeting_morning": "Good morning! How can I assist you today? Feel free to ask about Payment, Return, Shipping, or Order Status.",
     "greeting_evening": "Good evening! What can I help you with tonight? Ask about Payment, Return, Shipping, or Order Status.",
-    
     "payment": "You can pay using credit cards, GCash, or other online payment methods.",
     "payment_online": "We accept payments through online banking and e-wallets like PayPal, GCash, and others.",
     "payment_cod": "We also offer cash on delivery (COD) for some locations.",
-    
     "return": "Our return policy allows returns within 30 days with a receipt.",
     "return_exchange": "You can exchange your item within 30 days if it's unused and in original packaging.",
     "return_refund": "Refunds are available for returned items within 7 days after processing.",
-    
     "shipping": "We offer free shipping on orders over ₱300!",
     "shipping_express": "We provide express shipping for orders placed before 12 PM for faster delivery.",
     "shipping_international": "We also ship internationally. Shipping costs will vary based on the destination.",
-    
     "order_status": "Here's how you can track your order. Go into the 'Orders' section of your account.",
     "order_status_update": "You can also check your order status by using the tracking number we sent to your email.",
     "order_status_help": "If you're having trouble tracking your order, please let us know and we'll assist you further.",
-    
     "positive_feedback": "Thank you for your positive feedback! We are happy you had a good experience.",
     "positive_thanks": "We appreciate your kind words! Your feedback helps us improve.",
     "positive_satisfaction": "We're thrilled you're satisfied with our service. We'll continue working hard to meet your expectations.",
-    
     "negative_feedback": "We're sorry to hear about your experience. We'll try to improve.",
     "negative_sorry": "Apologies for the inconvenience caused. We're working on resolving the issue.",
     "negative_issue": "We understand your concerns and are looking into the matter. Thank you for bringing it to our attention.",
-    
     "neutral_feedback": "Thank you for your feedback. We'll take note of it.",
     "neutral_acknowledge": "Thanks for sharing your thoughts! We'll keep improving based on your feedback.",
     "neutral_suggestions": "Feel free to suggest how we can improve. Your input is valuable to us.",
-    
     "default": "I'm sorry, I didn't quite understand that. Can you please rephrase?",
     "default_clarify": "Could you please clarify your question? I'll be happy to assist.",
     "default_rephrase": "I didn't catch that. Can you rephrase your question or request?"
@@ -145,35 +137,6 @@ def start_new_conversation():
     st.session_state["previous_conversations"].append(list(st.session_state["chat_history"]))
     st.session_state["chat_history"] = [("Assistify", "Hi! How can I help you today?")]
 
-# Capture the new user input
-if "new_query" in st.session_state:
-    user_query = st.session_state["new_query"]
-else:
-    user_query = ""
-
-if user_query:
-    # Add user message to the chat history
-    st.session_state["chat_history"].append(("You", user_query))
-    
-    # Get the bot's response and sentiment after the user input
-    response, sentiment = get_response(user_query)
-    
-    # Show typing animation
-    typing_placeholder = st.empty()  # Placeholder for typing animation
-    typing_placeholder.markdown("**Bot is typing...**")
-    
-    # Add a delay to simulate typing animation with smooth character-by-character effect
-    for i in range(1, len(response) + 1):
-        typing_placeholder.markdown(f"**Bot:** {response[:i]}")
-        time.sleep(0.05)  # Adjust the speed here for smoother typing
-    
-    # After typing animation, add the bot response and sentiment to chat history
-    st.session_state["chat_history"].append(("Bot", response))
-    st.session_state["chat_history"].append(("Sentiment", f"Sentiment: {sentiment.capitalize()}"))
-    
-    # Clear the input box after submitting
-    st.session_state["new_query"] = ""  # Reset new_query
-
 # Sidebar for previous prompts with collapsible feature
 with st.sidebar:
     st.markdown("## Assistify")  # App name in the sidebar
@@ -203,22 +166,41 @@ for sender, message in st.session_state["chat_history"]:
         st.markdown(f"**You:** {message}")
     elif sender == "Bot":
         st.markdown(f"**Bot:** {message}")
-    elif sender == "Sentiment":
-        st.markdown(f"*{message}*")
-st.markdown("</div>", unsafe_allow_html=True)
 
-# Fix the input field at the bottom using a container
-st.markdown("""
-    <style>
-        .stTextInput {
-            position: fixed;
-            bottom: 20px;  /* Fixed 20px from the bottom */
-            left: 1;
-            right: 1;
-            z-index: 100;
-        }
-    </style>
-""", unsafe_allow_html=True)
+# Vanishing placeholder for input field
+if "placeholder_text" not in st.session_state:
+    st.session_state["placeholder_text"] = "Type your message here"
 
-# Input field at the bottom
-st.text_input("", key="new_query", label_visibility="collapsed")
+user_query = st.text_input(
+    "",
+    key="new_query",
+    placeholder=st.session_state["placeholder_text"],
+    label_visibility="collapsed",
+)
+
+# Clear the placeholder text once the user starts typing
+if user_query:
+    st.session_state["placeholder_text"] = ""
+
+if user_query:
+    # Add user message to the chat history
+    st.session_state["chat_history"].append(("You", user_query))
+    
+    # Get the bot's response and sentiment after the user input
+    response, sentiment = get_response(user_query)
+    
+    # Show typing animation
+    typing_placeholder = st.empty()  # Placeholder for typing animation
+    typing_placeholder.markdown("**Bot is typing...**")
+    
+    # Add a delay to simulate typing animation with smooth character-by-character effect
+    for i in range(1, len(response) + 1):
+        typing_placeholder.markdown(f"**Bot:** {response[:i]}")
+        time.sleep(0.05)  # Adjust the speed here for smoother typing
+    
+    # After typing animation, add the bot response and sentiment to chat history
+    st.session_state["chat_history"].append(("Bot", response))
+    st.session_state["chat_history"].append(("Sentiment", f"Sentiment: {sentiment.capitalize()}"))
+    
+    # Clear the input box after submitting
+    st.session_state["new_query"] = ""  # Reset new_query
