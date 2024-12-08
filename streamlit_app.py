@@ -58,7 +58,7 @@ responses = {
     "shipping_express": "We provide express shipping for orders placed before 12 PM for faster delivery.",
     "shipping_international": "We also ship internationally. Shipping costs will vary based on the destination.",
     
-    "order_status": "Sure, here's how you can track your order. Go into the 'Orders' section of your account.",
+    "order_status": "Here's how you can track your order. Go into the 'Orders' section of your account.",
     "order_status_update": "You can also check your order status by using the tracking number we sent to your email.",
     "order_status_help": "If you're having trouble tracking your order, please let us know and we'll assist you further.",
     
