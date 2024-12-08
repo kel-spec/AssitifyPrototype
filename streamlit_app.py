@@ -114,10 +114,8 @@ with st.sidebar:
     st.markdown("### About")
     st.info(
         """
-        **Assistify** is a personalized shopping assistant powered by machine learning. It
-        provides tailored responses based on sentiment analysis of your input, offering a
-        smoother and more responsive shopping experience. Use it to ask questions about
-        payment, returns, shipping, or to simply engage in friendly conversation.
+        Assistify helps you with shopping questions like payment, returns, and shipping.
+        Get personalized responses based on your input sentiment.
         """
     )
     st.markdown("### Previous Conversations")
@@ -136,8 +134,8 @@ with st.sidebar:
 # Main chat container
 st.markdown("")
 
-# Display a prompt before the input field
-st.markdown("### Type your message here:")
+# Display a prompt before the input field (less prominent)
+st.markdown("<small>Type your message here:</small>", unsafe_allow_html=True)
 
 # Display chat history in the main chat area
 for sender, message in st.session_state["chat_history"]:
