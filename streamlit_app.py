@@ -161,12 +161,13 @@ st.markdown("""
         }
         .stTextInput {
             position: fixed;
-            top: 80px;  /* Adjusts to position below the title */
+            top: 0;  /* This places it at the very top */
             left: 0;
             right: 0;
-            z-index: 1;
-            padding: 0 10px;
+            z-index: 10;
             background-color: white; /* Keeps input box readable */
+            padding: 10px;
+            margin-top: 60px;  /* Adds a bit of space to avoid overlap */
         }
     </style>
 """, unsafe_allow_html=True)
