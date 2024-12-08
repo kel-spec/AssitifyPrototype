@@ -2,7 +2,7 @@ import time
 import streamlit as st
 import pickle
 import re
-from sklearn.feature_extraction.text import TfidfVectorizer
+from textblob import TextBlob  # Using TextBlob for sentiment analysis
 
 # Set Streamlit page configuration
 st.set_page_config(page_title="Assistify 🛒", layout="wide")
@@ -25,14 +25,19 @@ def preprocess_text_basic(text):
     text = re.sub(r"[^a-zA-Z\s]", "", text)  # Remove non-alphabet characters
     return text
 
-# Function to analyze sentiment using the logistic regression model
+# Function to analyze sentiment using TextBlob
 def analyze_sentiment(text):
     text = preprocess_text_basic(text)
-    input_tfidf = tfidf_vectorizer.transform([text])
-    sentiment = log_reg_model.predict(input_tfidf)
+    blob = TextBlob(text)
     
-    sentiment_map = {0: "negative", 4: "positive"}
-    return sentiment_map.get(sentiment[0], "neutral")
+    # Classify the sentiment
+    polarity = blob.sentiment.polarity
+    if polarity > 0:
+        return "positive"
+    elif polarity < 0:
+        return "negative"
+    else:
+        return "neutral"
 
 # Define chatbot responses
 responses = {
