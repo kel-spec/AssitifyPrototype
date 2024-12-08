@@ -149,8 +149,8 @@ st.markdown("""
         .stTextInput {
             position: fixed;
             bottom: 20px;  /* Fixed 20px from the bottom */
-            left: 0.2;
-            right: 0;
+            left: 1;
+            right: 1;
             z-index: 100;
         }
     </style>
