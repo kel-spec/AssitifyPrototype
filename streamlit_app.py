@@ -68,11 +68,15 @@ def get_response(user_input):
     else:
         return responses["default"], sentiment
 
-# Initialize the session state for chat history and input management
+# Initialize session state
 if "chat_history" not in st.session_state:
     st.session_state["chat_history"] = [("Assistify", "Hi! How can I help you today?")]
 
-# Define a function to handle new user input
+# Ensure 'new_query' is initialized in session state
+if "new_query" not in st.session_state:
+    st.session_state["new_query"] = ""
+
+# Function to handle new user input
 def handle_new_input(user_input):
     if user_input:
         # Add user input to chat history
@@ -121,4 +125,5 @@ user_input = st.text_input("Type your message here:", key="new_query")
 # Handle user input on Enter
 if user_input:
     handle_new_input(user_input)
-    st.session_state["new_query"] = ""  # Reset the input field (not user_input)
+    # Reset the input field only after processing
+    st.session_state["new_query"] = ""  # Reset the input field after processing
