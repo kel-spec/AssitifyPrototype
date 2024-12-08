@@ -10,7 +10,6 @@ st.set_page_config(page_title="Assistify 🛒", layout="wide")
 # Load pre-trained models and vectorizer
 @st.cache_resource
 def load_models():
-    # Adjust the file paths to point to the 'models' folder
     with open("models/log_reg_model.pkl", "rb") as model_file:
         log_reg_model = pickle.load(model_file)
     with open("models/tfidf_vectorizer.pkl", "rb") as vectorizer_file:
@@ -21,7 +20,7 @@ log_reg_model, tfidf_vectorizer = load_models()
 
 # Basic preprocessing function
 def preprocess_text_basic(text):
-    text = text.lower()  # Convert to lowercase
+    text = text.lower()
     text = re.sub(r"http\S+", "", text)  # Remove URLs
     text = re.sub(r"[^a-zA-Z\s]", "", text)  # Remove non-alphabet characters
     return text
@@ -83,9 +82,7 @@ if "previous_conversations" not in st.session_state:
 
 # Function to start a new conversation
 def start_new_conversation():
-    # Save current conversation to previous conversations
     st.session_state["previous_conversations"].append(list(st.session_state["chat_history"]))
-    # Clear current conversation history
     st.session_state["chat_history"] = [("Assistify", "Hi! How can I help you today?")]
 
 # Capture the new user input
@@ -105,10 +102,10 @@ if user_query:
     typing_placeholder = st.empty()  # Placeholder for typing animation
     typing_placeholder.markdown("**Bot is typing...**")
     
-    # Add a delay to simulate typing animation
+    # Add a delay to simulate typing animation with smooth character-by-character effect
     for i in range(1, len(response) + 1):
         typing_placeholder.markdown(f"**Bot:** {response[:i]}")
-        time.sleep(0.05)  # Adjust speed here
+        time.sleep(0.05)  # Adjust the speed here for smoother typing
     
     # Add bot response and sentiment to chat history after typing animation
     st.session_state["chat_history"].append(("Bot", response))
@@ -137,7 +134,6 @@ with st.sidebar:
     with st.expander("Previous Conversations"):
         for idx, conversation in enumerate(st.session_state["previous_conversations"]):
             if st.button(f"Conversation {idx + 1}", key=f"conv_{idx}"):
-                # Load selected conversation into chat history
                 st.session_state["chat_history"] = conversation
 
 # Main chat container
