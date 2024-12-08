@@ -52,16 +52,16 @@ def get_response(user_input):
     user_input = user_input.lower()
     sentiment = analyze_sentiment(user_input)
     
-    # Intent matching based on simple keyword checks
+    # Intent matching based on more comprehensive keyword checks
     if "hello" in user_input or "hi" in user_input:
         return responses["greeting"], sentiment
-    elif "payment" in user_input:
+    elif "payment" in user_input or "how to pay" in user_input:
         return responses["payment"], sentiment
     elif "return" in user_input or "refund" in user_input:
         return responses["return"], sentiment
-    elif "shipping" in user_input:
+    elif "shipping" in user_input or "shipping fee" in user_input or "delivery" in user_input:
         return responses["shipping"], sentiment
-    elif "order" in user_input:
+    elif "order" in user_input or "track" in user_input:
         return responses["order_status"], sentiment
     elif sentiment == "positive":
         return responses["positive_feedback"], sentiment
@@ -71,7 +71,7 @@ def get_response(user_input):
         return responses["neutral_feedback"], sentiment
     else:
         return responses["default"], sentiment
-
+        
 # Streamlit app setup
 st.title("Assistify 🛒")
 st.subheader("Your personal shopping assistant!")
