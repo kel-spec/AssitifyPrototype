@@ -136,7 +136,7 @@ with st.sidebar:
                 st.session_state["chat_history"] = conversation
 
 # Display a prompt before the input field (less prominent)
-st.markdown("<small>Type your message here:</small>", unsafe_allow_html=True)
+st.markdown("<small>Conversation History:</small>", unsafe_allow_html=True)
 
 # Display chat history in the main chat area
 for sender, message in st.session_state["chat_history"]:
