@@ -41,11 +41,11 @@ def analyze_sentiment(text):
 
 # Define chatbot responses
 responses = {
-    "greeting": "Hello! How can I assist you with your shopping today?",
-    "payment": "You can pay using credit cards, PayPal, or other online payment methods.",
+    "greeting": "Hello! Here's a list of questions you can ask me: Payment, Return, Shipping, Order Status.",
+    "payment": "You can pay using credit cards, GCash, or other online payment methods.",
     "return": "Our return policy allows returns within 30 days with a receipt.",
-    "shipping": "We offer free shipping on orders over $50!",
-    "order_status": "You can track your order in the 'Orders' section of your account.",
+    "shipping": "We offer free shipping on orders over ₱300!",
+    "order_status": "Sure, here's how you can track your order. Go into the 'Orders' section of your account.",
     "positive_feedback": "Thank you for your positive feedback! We are happy you had a good experience.",
     "negative_feedback": "We're sorry to hear about your experience. We'll try to improve.",
     "neutral_feedback": "Thank you for your feedback. We'll take note of it.",
