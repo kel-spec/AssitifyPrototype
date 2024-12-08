@@ -160,9 +160,9 @@ st.markdown("""
         }
         .stTextInput {
             position: fixed;
-            top: 80px;  /* Adjust to place input box below the title */
-            left: 0;
-            right: 0;
+            top: 200px;  /* Adjust to place input box below the title */
+            left: 1;
+            right: 1;
             z-index: 10;
             padding: 10px;
             background-color: transparent; /* Remove the white box */
