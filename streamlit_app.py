@@ -2,17 +2,41 @@ import time
 import streamlit as st
 import pickle
 import re
+from sklearn.feature_extraction.text import TfidfVectorizer
 
-# Set page config to make it more chat-like
+# Set Streamlit page configuration
 st.set_page_config(page_title="Assistify 🛒", layout="wide")
 
-# Load the saved Logistic Regression model
-with open('models/log_reg_model.pkl', 'rb') as model_file:
-    log_reg_loaded = pickle.load(model_file)
+# Load pre-trained models and vectorizer
+@st.cache_resource
+def load_models():
+    # Load the Logistic Regression model
+    with open("log_reg_model.pkl", "rb") as model_file:
+        log_reg_model = pickle.load(model_file)
+    
+    # Load the TF-IDF vectorizer
+    with open("tfidf_vectorizer.pkl", "rb") as vectorizer_file:
+        tfidf_vectorizer = pickle.load(vectorizer_file)
+    
+    return log_reg_model, tfidf_vectorizer
 
-# Load the saved TF-IDF vectorizer
-with open('models/tfidf_vectorizer.pkl', 'rb') as vectorizer_file:
-    tfidf_loaded = pickle.load(vectorizer_file)
+log_reg_model, tfidf_vectorizer = load_models()
+
+# Basic preprocessing function
+def preprocess_text_basic(text):
+    text = text.lower()  # Convert to lowercase
+    text = re.sub(r"http\S+", "", text)  # Remove URLs
+    text = re.sub(r"[^a-zA-Z\s]", "", text)  # Remove non-alphabet characters
+    return text
+
+# Function to analyze sentiment using the logistic regression model
+def analyze_sentiment(text):
+    text = preprocess_text_basic(text)
+    input_tfidf = tfidf_vectorizer.transform([text])
+    sentiment = log_reg_model.predict(input_tfidf)
+    
+    sentiment_map = {0: "negative", 4: "positive"}
+    return sentiment_map.get(sentiment[0], "neutral")
 
 # Define chatbot responses
 responses = {
@@ -26,7 +50,7 @@ responses = {
     "default": "I'm sorry, I didn't quite understand that. Can you please rephrase?",
 }
 
-# Function to get chatbot response based on user input
+# Function to get chatbot response based on user input and sentiment
 def get_response(user_input):
     user_input = user_input.lower()
     sentiment = analyze_sentiment(user_input)
@@ -48,39 +72,14 @@ def get_response(user_input):
     else:
         return responses["default"], sentiment
 
-# Function to analyze sentiment using the saved Logistic Regression model and TF-IDF vectorizer
-def analyze_sentiment(text):
-    # Preprocess input text
-    text = preprocess_text_basic(text)
-    
-    # Convert the input text using the TF-IDF vectorizer
-    input_tfidf = tfidf_loaded.transform([text])
-    
-    # Predict sentiment using the Logistic Regression model
-    sentiment = log_reg_loaded.predict(input_tfidf)
-    
-    if sentiment == 0:
-        return "negative"
-    elif sentiment == 4:
-        return "positive"
-    else:
-        return "neutral"
-
-# Preprocessing function (same as before)
-def preprocess_text_basic(text):
-    text = text.lower()
-    text = re.sub(r'http\S+', '', text)  # Remove URLs
-    text = re.sub(r'[^a-zA-Z\s]', '', text)  # Remove non-alphabet characters
-    return text
-
 # Streamlit app setup
-st.title("Assistify")
+st.title("Assistify 🛒")
 st.subheader("Your personal shopping assistant!")
 
 # Initialize the session state for conversation history
 if "chat_history" not in st.session_state:
     st.session_state["chat_history"] = [("Assistify", "Hi! How can I help you today?")]
-
+    
 # Initialize previous conversations list in session state
 if "previous_conversations" not in st.session_state:
     st.session_state["previous_conversations"] = []
