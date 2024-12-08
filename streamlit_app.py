@@ -145,21 +145,23 @@ with st.sidebar:
             if st.button(f"Conversation {idx + 1}", key=f"conv_{idx}"):
                 st.session_state["chat_history"] = conversation
 
-# Main chat container
-st.markdown("")  # Adds space above chat history for input prompt
+# Create two columns for the layout
+col1, col2 = st.columns([4, 1])
 
-# Display a prompt before the input field (less prominent)
-st.markdown("<small>Type your message here:</small>", unsafe_allow_html=True)
+# First column for the chat history
+with col1:
+    st.markdown("")  # Adds space above chat history for input prompt
 
-# Display chat history in the main chat area
-for sender, message in st.session_state["chat_history"]:
-    if sender == "You":
-        st.markdown(f"**You:** {message}")
-    elif sender == "Bot":
-        st.markdown(f"**Bot:** {message}")
-    elif sender == "Sentiment":
-        st.markdown(f"*{message}*")
+    # Display chat history in the main chat area
+    for sender, message in st.session_state["chat_history"]:
+        if sender == "You":
+            st.markdown(f"**You:** {message}")
+        elif sender == "Bot":
+            st.markdown(f"**Bot:** {message}")
+        elif sender == "Sentiment":
+            st.markdown(f"*{message}*")
 
-# Input field at the bottom of the chat history
-with st.container():
+# Second column for the user input box, fixed at the bottom
+with col2:
     user_input = st.text_input("", key="new_query", label_visibility="collapsed")
+
