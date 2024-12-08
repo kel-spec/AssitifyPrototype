@@ -161,19 +161,7 @@ with col1:
         elif sender == "Sentiment":
             st.markdown(f"*{message}*")
 
-# Fixed position for the input box
-st.markdown(
-    """
-    <style>
-    .stTextInput>div>div>input {
-        width: 100%;
-        height: 45px;
-        box-sizing: border-box;
-    }
-    </style>
-    """, unsafe_allow_html=True)
-
-# Input box at the bottom, spanning the full width
+# Fixed position for the input box at the top, above the chat history
 with st.container():
-    user_input = st.text_input("", key="new_query", label_visibility="collapsed")
+    user_input = st.text_input("Type your message here:", key="new_query")
 
