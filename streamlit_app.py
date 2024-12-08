@@ -131,9 +131,6 @@ with st.sidebar:
                 # Load selected conversation into chat history
                 st.session_state["chat_history"] = conversation
 
-# Main chat container
-st.markdown("")
-
 # Display a prompt before the input field (less prominent)
 st.markdown("<small>Type your message here:</small>", unsafe_allow_html=True)
 
@@ -145,6 +142,19 @@ for sender, message in st.session_state["chat_history"]:
         st.markdown(f"**Bot:** {message}")
     elif sender == "Sentiment":
         st.markdown(f"*{message}*")
+
+# Custom CSS to fix input box to the bottom of the screen and prevent it from being pushed down
+st.markdown("""
+    <style>
+        .stTextInput {
+            position: fixed;
+            bottom: 20px;  /* Fixed 20px from the bottom */
+            left: 0;
+            right: 0;
+            z-index: 100;
+        }
+    </style>
+""", unsafe_allow_html=True)
 
 # Input field at the bottom
 with st.container():
