@@ -10,6 +10,7 @@ st.set_page_config(page_title="Assistify 🛒", layout="wide")
 # Load pre-trained models and vectorizer
 @st.cache_resource
 def load_models():
+    # Adjust the file paths to point to the 'models' folder
     with open("models/log_reg_model.pkl", "rb") as model_file:
         log_reg_model = pickle.load(model_file)
     with open("models/tfidf_vectorizer.pkl", "rb") as vectorizer_file:
@@ -68,62 +69,73 @@ def get_response(user_input):
     else:
         return responses["default"], sentiment
 
-# Initialize session state
+# Streamlit app setup
+st.title("Assistify 🛒")
+st.subheader("Your personal shopping assistant!")
+
+# Initialize the session state for conversation history
 if "chat_history" not in st.session_state:
     st.session_state["chat_history"] = [("Assistify", "Hi! How can I help you today?")]
+    
+# Initialize previous conversations list in session state
+if "previous_conversations" not in st.session_state:
+    st.session_state["previous_conversations"] = []
 
-# Ensure 'new_query' is initialized in session state
-if "new_query" not in st.session_state:
-    st.session_state["new_query"] = ""
+# Function to start a new conversation
+def start_new_conversation():
+    # Save current conversation to previous conversations
+    st.session_state["previous_conversations"].append(list(st.session_state["chat_history"]))
+    # Clear current conversation history
+    st.session_state["chat_history"] = [("Assistify", "Hi! How can I help you today?")]
 
-# Function to handle new user input
-def handle_new_input(user_input):
-    if user_input:
-        # Add user input to chat history
-        st.session_state["chat_history"].append(("You", user_input))
-        
-        # Get chatbot response and sentiment
-        response, sentiment = get_response(user_input)
-        
-        # Add response and sentiment to chat history
-        st.session_state["chat_history"].append(("Assistify", response))
-        st.session_state["chat_history"].append(("Sentiment", f"Sentiment: {sentiment.capitalize()}"))
+# Capture the new user input
+if "new_query" in st.session_state:
+    user_query = st.session_state["new_query"]
+else:
+    user_query = ""
 
-# Sidebar with About Section
+if user_query:
+    # Add user message to the chat history
+    st.session_state["chat_history"].append(("You", user_query))
+    
+    # Get the bot's response and sentiment after the user input
+    response, sentiment = get_response(user_query)
+    
+    # Add bot response and sentiment to chat history
+    st.session_state["chat_history"].append(("Bot", response))
+    st.session_state["chat_history"].append(("Sentiment", f"Sentiment: {sentiment.capitalize()}"))
+
+    # Clear the input box after submitting
+    st.session_state["new_query"] = ""  # Reset new_query
+
+# Sidebar for previous prompts with collapsible feature
 with st.sidebar:
-    st.markdown("## Assistify")
-    st.markdown("### About")
-    st.info(
-        """
-        **Assistify** is your personalized shopping assistant powered by machine learning.
-        It analyzes your feedback and provides tailored responses. Feel free to explore our features
-        like sentiment analysis and contextual responses to improve your shopping experience!
-        """
-    )
+    st.markdown("## Assistify")  # App name in the sidebar
     st.markdown("### Previous Conversations")
     
     # Button to start a new conversation
     if st.button("Start New Conversation"):
-        st.session_state["chat_history"] = [("Assistify", "Hi! How can I help you today?")]
+        start_new_conversation()
+    
+    # Display previous conversations as clickable items
+    with st.expander("Previous Conversations"):
+        for idx, conversation in enumerate(st.session_state["previous_conversations"]):
+            if st.button(f"Conversation {idx + 1}", key=f"conv_{idx}"):
+                # Load selected conversation into chat history
+                st.session_state["chat_history"] = conversation
 
-# Main Chat Interface
-st.title("Assistify 🛒")
-st.markdown("Your personalized shopping assistant!")
+# Main chat container
+st.markdown("")
 
-# Display chat history
+# Display chat history in main chat area
 for sender, message in st.session_state["chat_history"]:
     if sender == "You":
         st.markdown(f"**You:** {message}")
-    elif sender == "Assistify":
-        st.markdown(f"**Assistify:** {message}")
+    elif sender == "Bot":
+        st.markdown(f"**Bot:** {message}")
     elif sender == "Sentiment":
         st.markdown(f"*{message}*")
 
-# User input section (prevent session state conflict)
-user_input = st.text_input("Type your message here:", key="new_query")
-
-# Handle user input on Enter
-if user_input:
-    handle_new_input(user_input)
-    # Clear the input field by handling it outside the session state directly
-    st.experimental_rerun()  # This forces Streamlit to rerun the script, clearing the input
+# Input field at the bottom
+with st.container():
+    user_input = st.text_input("Type your message here:", key="new_query", label_visibility="collapsed")
