@@ -101,10 +101,19 @@ if user_query:
     # Get the bot's response and sentiment after the user input
     response, sentiment = get_response(user_query)
     
-    # Add bot response and sentiment to chat history
+    # Simulate typing animation in the chat
+    typing_placeholder = st.empty()  # Placeholder for typing animation
+    typing_placeholder.markdown("**Bot is typing...**")
+    
+    # Add a delay to simulate typing animation
+    for i in range(1, len(response) + 1):
+        typing_placeholder.markdown(f"**Bot:** {response[:i]}")
+        time.sleep(0.05)  # Adjust speed here
+    
+    # Add bot response and sentiment to chat history after typing animation
     st.session_state["chat_history"].append(("Bot", response))
     st.session_state["chat_history"].append(("Sentiment", f"Sentiment: {sentiment.capitalize()}"))
-
+    
     # Clear the input box after submitting
     st.session_state["new_query"] = ""  # Reset new_query
 
