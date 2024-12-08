@@ -160,7 +160,7 @@ st.markdown("""
         }
         .stTextInput {
             position: fixed;
-            top: 100px;  /* Fixed input box below the title */
+            top: 200px;  /* Fixed input box below the title */
             left: 1;
             right: 0;
             z-index: 10;
