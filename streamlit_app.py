@@ -111,6 +111,15 @@ if user_query:
 # Sidebar for previous prompts with collapsible feature
 with st.sidebar:
     st.markdown("## Assistify")  # App name in the sidebar
+    st.markdown("### About")
+    st.info(
+        """
+        **Assistify** is a personalized shopping assistant powered by machine learning. It
+        provides tailored responses based on sentiment analysis of your input, offering a
+        smoother and more responsive shopping experience. Use it to ask questions about
+        payment, returns, shipping, or to simply engage in friendly conversation.
+        """
+    )
     st.markdown("### Previous Conversations")
     
     # Button to start a new conversation
@@ -127,7 +136,10 @@ with st.sidebar:
 # Main chat container
 st.markdown("")
 
-# Display chat history in main chat area
+# Display a prompt before the input field
+st.markdown("### Type your message here:")
+
+# Display chat history in the main chat area
 for sender, message in st.session_state["chat_history"]:
     if sender == "You":
         st.markdown(f"**You:** {message}")
@@ -138,4 +150,4 @@ for sender, message in st.session_state["chat_history"]:
 
 # Input field at the bottom
 with st.container():
-    user_input = st.text_input("Type your message here:", key="new_query", label_visibility="collapsed")
+    user_input = st.text_input("", key="new_query", label_visibility="collapsed")
