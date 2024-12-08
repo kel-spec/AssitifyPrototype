@@ -145,23 +145,42 @@ with st.sidebar:
             if st.button(f"Conversation {idx + 1}", key=f"conv_{idx}"):
                 st.session_state["chat_history"] = conversation
 
-# Create two columns for the layout
-col1, col2 = st.columns([4, 1])
+# Custom CSS to fix input box at the top
+st.markdown("""
+    <style>
+        .stTextInput input {
+            width: 100%;
+            font-size: 16px;
+            padding: 10px;
+        }
+        .chat-history {
+            max-height: 400px;
+            overflow-y: scroll;
+            padding-right: 10px;
+        }
+        .stTextInput {
+            position: fixed;
+            top: 20px;
+            left: 0;
+            right: 0;
+            z-index: 1;
+            margin-top: 60px;
+            padding: 0 10px;
+        }
+    </style>
+""", unsafe_allow_html=True)
 
-# First column for the chat history
-with col1:
-    st.markdown("")  # Adds space above chat history for input prompt
+# Main container with scrollable chat history
+st.markdown("<div class='chat-history'>", unsafe_allow_html=True)
+for sender, message in st.session_state["chat_history"]:
+    if sender == "You":
+        st.markdown(f"**You:** {message}")
+    elif sender == "Bot":
+        st.markdown(f"**Bot:** {message}")
+    elif sender == "Sentiment":
+        st.markdown(f"*{message}*")
+st.markdown("</div>", unsafe_allow_html=True)
 
-    # Display chat history in the main chat area
-    for sender, message in st.session_state["chat_history"]:
-        if sender == "You":
-            st.markdown(f"**You:** {message}")
-        elif sender == "Bot":
-            st.markdown(f"**Bot:** {message}")
-        elif sender == "Sentiment":
-            st.markdown(f"*{message}*")
-
-# Fixed position for the input box at the top, above the chat history
+# Input box that stays fixed at the top
 with st.container():
     user_input = st.text_input("Type your message here:", key="new_query")
-
