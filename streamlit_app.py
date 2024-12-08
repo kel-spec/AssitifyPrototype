@@ -166,6 +166,33 @@ st.markdown("""
             right: 1;
             z-index: 100;
         }
+
+        /* Add custom styles for other elements as described above */
+        .stButton, .stTextInput, .stMarkdown a {
+            background-color: #007BFF;
+            color: white;
+            border-radius: 5px;
+        }
+
+        .stButton:hover, .stTextInput:hover {
+            background-color: #0056b3;
+        }
+
+        .stApp {
+            background-color: #F4F4F9;
+        }
+
+        .stMarkdown, .stText, .stTextInput, .stButton {
+            color: #333333;
+        }
+
+        .stSidebar {
+            background-color: #CCCCCC;
+        }
+
+        .stMarkdown pre, .stTextInput, .stText {
+            font-family: 'Courier New', monospace;
+        }
     </style>
 """, unsafe_allow_html=True)
 
