@@ -10,7 +10,6 @@ st.set_page_config(page_title="Assistify 🛒", layout="wide")
 # Load pre-trained models and vectorizer
 @st.cache_resource
 def load_models():
-    # Adjust the file paths to point to the 'models' folder
     with open("models/log_reg_model.pkl", "rb") as model_file:
         log_reg_model = pickle.load(model_file)
     with open("models/tfidf_vectorizer.pkl", "rb") as vectorizer_file:
@@ -101,6 +100,11 @@ if user_query:
     # Get the bot's response and sentiment after the user input
     response, sentiment = get_response(user_query)
     
+    # Add a "typing..." message for animation
+    with st.empty():
+        st.markdown("<small>Typing...</small>", unsafe_allow_html=True)
+        time.sleep(2)  # Simulate typing time
+
     # Add bot response and sentiment to chat history
     st.session_state["chat_history"].append(("Bot", response))
     st.session_state["chat_history"].append(("Sentiment", f"Sentiment: {sentiment.capitalize()}"))
