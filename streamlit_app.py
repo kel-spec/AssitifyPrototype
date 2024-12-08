@@ -162,7 +162,7 @@ st.markdown("""
             position: fixed;
             top: 200px;  /* Adjust to place input box below the title */
             left: 1;
-            right: 5;
+            right: 10;
             z-index: 10;
             padding: 10px;
             background-color: transparent; /* Remove the white box */
@@ -183,4 +183,4 @@ st.markdown("</div>", unsafe_allow_html=True)
 
 # Input box that stays fixed below the title
 with st.container():
-    user_input = st.text_input("Type your message here:", key="new_query")
+    user_input = st.text_input("", key="new_query")
