@@ -148,9 +148,6 @@ with st.sidebar:
 # Main chat container
 st.markdown("")
 
-# Display a prompt before the input field (less prominent)
-st.markdown("<small>Type your message here:</small>", unsafe_allow_html=True)
-
 # Display chat history in the main chat area
 for sender, message in st.session_state["chat_history"]:
     if sender == "You":
@@ -160,6 +157,6 @@ for sender, message in st.session_state["chat_history"]:
     elif sender == "Sentiment":
         st.markdown(f"*{message}*")
 
-# Input field at the bottom
+# Fix the input field at the bottom
 with st.container():
-    user_input = st.text_input("", key="new_query", label_visibility="collapsed")
+    st.text_input("", key="new_query", label_visibility="collapsed")
