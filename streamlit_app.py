@@ -10,14 +10,11 @@ st.set_page_config(page_title="Assistify 🛒", layout="wide")
 # Load pre-trained models and vectorizer
 @st.cache_resource
 def load_models():
-    # Load the Logistic Regression model
-    with open("log_reg_model.pkl", "rb") as model_file:
+    # Adjust the file paths to point to the 'models' folder
+    with open("models/log_reg_model.pkl", "rb") as model_file:
         log_reg_model = pickle.load(model_file)
-    
-    # Load the TF-IDF vectorizer
-    with open("tfidf_vectorizer.pkl", "rb") as vectorizer_file:
+    with open("models/tfidf_vectorizer.pkl", "rb") as vectorizer_file:
         tfidf_vectorizer = pickle.load(vectorizer_file)
-    
     return log_reg_model, tfidf_vectorizer
 
 log_reg_model, tfidf_vectorizer = load_models()
