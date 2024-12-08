@@ -1,3 +1,4 @@
+import datetime
 import time
 import streamlit as st
 import pickle
@@ -42,14 +43,40 @@ def analyze_sentiment(text):
 # Define chatbot responses
 responses = {
     "greeting": "Hello! Here's a list of questions you can ask me: Payment, Return, Shipping, Order Status.",
+    "greeting_morning": "Good morning! How can I assist you today? Feel free to ask about Payment, Return, Shipping, or Order Status.",
+    "greeting_evening": "Good evening! What can I help you with tonight? Ask about Payment, Return, Shipping, or Order Status.",
+    
     "payment": "You can pay using credit cards, GCash, or other online payment methods.",
+    "payment_online": "We accept payments through online banking and e-wallets like PayPal, GCash, and others.",
+    "payment_cod": "We also offer cash on delivery (COD) for some locations.",
+    
     "return": "Our return policy allows returns within 30 days with a receipt.",
+    "return_exchange": "You can exchange your item within 30 days if it's unused and in original packaging.",
+    "return_refund": "Refunds are available for returned items within 7 days after processing.",
+    
     "shipping": "We offer free shipping on orders over ₱300!",
+    "shipping_express": "We provide express shipping for orders placed before 12 PM for faster delivery.",
+    "shipping_international": "We also ship internationally. Shipping costs will vary based on the destination.",
+    
     "order_status": "Sure, here's how you can track your order. Go into the 'Orders' section of your account.",
+    "order_status_update": "You can also check your order status by using the tracking number we sent to your email.",
+    "order_status_help": "If you're having trouble tracking your order, please let us know and we'll assist you further.",
+    
     "positive_feedback": "Thank you for your positive feedback! We are happy you had a good experience.",
+    "positive_thanks": "We appreciate your kind words! Your feedback helps us improve.",
+    "positive_satisfaction": "We're thrilled you're satisfied with our service. We'll continue working hard to meet your expectations.",
+    
     "negative_feedback": "We're sorry to hear about your experience. We'll try to improve.",
+    "negative_sorry": "Apologies for the inconvenience caused. We're working on resolving the issue.",
+    "negative_issue": "We understand your concerns and are looking into the matter. Thank you for bringing it to our attention.",
+    
     "neutral_feedback": "Thank you for your feedback. We'll take note of it.",
+    "neutral_acknowledge": "Thanks for sharing your thoughts! We'll keep improving based on your feedback.",
+    "neutral_suggestions": "Feel free to suggest how we can improve. Your input is valuable to us.",
+    
     "default": "I'm sorry, I didn't quite understand that. Can you please rephrase?",
+    "default_clarify": "Could you please clarify your question? I'll be happy to assist.",
+    "default_rephrase": "I didn't catch that. Can you rephrase your question or request?"
 }
 
 # Function to get chatbot response based on user input and sentiment
@@ -57,17 +84,41 @@ def get_response(user_input):
     user_input = user_input.lower()
     sentiment = analyze_sentiment(user_input)
     
-    # Intent matching based on more comprehensive keyword checks
+    # Time-based greeting
+    current_hour = datetime.datetime.now().hour
     if "hello" in user_input or "hi" in user_input:
-        return responses["greeting"], sentiment
+        if 6 <= current_hour < 12:
+            return responses["greeting_morning"], sentiment
+        elif 18 <= current_hour < 22:
+            return responses["greeting_evening"], sentiment
+        else:
+            return responses["greeting"], sentiment
+    
+    # Intent matching based on more comprehensive keyword checks
     elif "payment" in user_input or "how to pay" in user_input:
         return responses["payment"], sentiment
+    elif "online payment" in user_input or "gcash" in user_input or "credit card" in user_input:
+        return responses["payment_online"], sentiment
+    elif "cod" in user_input or "cash on delivery" in user_input:
+        return responses["payment_cod"], sentiment
     elif "return" in user_input or "refund" in user_input:
         return responses["return"], sentiment
+    elif "exchange" in user_input:
+        return responses["return_exchange"], sentiment
+    elif "refund process" in user_input or "return refund" in user_input:
+        return responses["return_refund"], sentiment
     elif "shipping" in user_input or "shipping fee" in user_input or "delivery" in user_input:
         return responses["shipping"], sentiment
+    elif "express shipping" in user_input or "fast shipping" in user_input:
+        return responses["shipping_express"], sentiment
+    elif "international shipping" in user_input or "international delivery" in user_input:
+        return responses["shipping_international"], sentiment
     elif "order" in user_input or "track" in user_input:
         return responses["order_status"], sentiment
+    elif "update" in user_input or "track order" in user_input:
+        return responses["order_status_update"], sentiment
+    elif "help" in user_input or "issue tracking" in user_input:
+        return responses["order_status_help"], sentiment
     elif sentiment == "positive":
         return responses["positive_feedback"], sentiment
     elif sentiment == "negative":
