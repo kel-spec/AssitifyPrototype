@@ -119,11 +119,11 @@ for sender, message in st.session_state["chat_history"]:
     elif sender == "Sentiment":
         st.markdown(f"*{message}*")
 
-# User input section
+# User input section (prevent session state conflict)
 user_input = st.text_input("Type your message here:", key="new_query")
 
 # Handle user input on Enter
 if user_input:
     handle_new_input(user_input)
-    # Reset the input field only after processing
-    st.session_state["new_query"] = ""  # Reset the input field after processing
+    # Clear the input field by handling it outside the session state directly
+    st.experimental_rerun()  # This forces Streamlit to rerun the script, clearing the input
