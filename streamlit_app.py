@@ -145,7 +145,7 @@ with st.sidebar:
             if st.button(f"Conversation {idx + 1}", key=f"conv_{idx}"):
                 st.session_state["chat_history"] = conversation
 
-# Custom CSS to fix input box at the top
+# Custom CSS to fix input box at the top and prevent overlap
 st.markdown("""
     <style>
         .stTextInput input {
@@ -157,15 +157,16 @@ st.markdown("""
             max-height: 400px;
             overflow-y: scroll;
             padding-right: 10px;
+            margin-top: 80px;  /* Ensures chat history doesn't overlap with the title or input */
         }
         .stTextInput {
             position: fixed;
-            top: 20px;
+            top: 80px;  /* Adjusts to position below the title */
             left: 0;
             right: 0;
             z-index: 1;
-            margin-top: 60px;
             padding: 0 10px;
+            background-color: white; /* Keeps input box readable */
         }
     </style>
 """, unsafe_allow_html=True)
