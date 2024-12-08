@@ -146,7 +146,7 @@ with st.sidebar:
                 st.session_state["chat_history"] = conversation
 
 # Main chat container
-st.markdown("")
+st.markdown("")  # Adds space above chat history for input prompt
 
 # Display a prompt before the input field (less prominent)
 st.markdown("<small>Type your message here:</small>", unsafe_allow_html=True)
@@ -160,6 +160,6 @@ for sender, message in st.session_state["chat_history"]:
     elif sender == "Sentiment":
         st.markdown(f"*{message}*")
 
-# Input field at the bottom
+# Input field at the bottom of the chat history
 with st.container():
     user_input = st.text_input("", key="new_query", label_visibility="collapsed")
