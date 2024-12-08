@@ -116,9 +116,9 @@ for sender, message in st.session_state["chat_history"]:
         st.markdown(f"*{message}*")
 
 # User input section
-user_input = st.text_input("Type your message here:", key="user_input")
+user_input = st.text_input("Type your message here:", key="new_query")
 
 # Handle user input on Enter
 if user_input:
     handle_new_input(user_input)
-    st.session_state.user_input = ""  # Clear the input field
+    st.session_state["new_query"] = ""  # Reset the input field (not user_input)
