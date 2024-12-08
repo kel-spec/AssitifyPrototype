@@ -145,33 +145,29 @@ with st.sidebar:
             if st.button(f"Conversation {idx + 1}", key=f"conv_{idx}"):
                 st.session_state["chat_history"] = conversation
 
-# Main chat container
-st.markdown(
-    """
-    <style>
-        .chat-history {
-            max-height: 600px;
-            overflow-y: auto;
-            padding-bottom: 50px; /* Add padding to avoid text overlapping the input box */
-        }
-    </style>
-    """, unsafe_allow_html=True
-)
-
-# Display chat history in the main chat area within a scrollable container
-chat_history_container = st.empty()
-with chat_history_container:
-    st.markdown("<div class='chat-history'>", unsafe_allow_html=True)
-    for sender, message in st.session_state["chat_history"]:
-        if sender == "You":
-            st.markdown(f"**You:** {message}")
-        elif sender == "Bot":
-            st.markdown(f"**Bot:** {message}")
-        elif sender == "Sentiment":
-            st.markdown(f"*{message}*")
-    st.markdown("</div>", unsafe_allow_html=True)
+# Display the chat history
+st.markdown("<div class='chat-history'>", unsafe_allow_html=True)
+for sender, message in st.session_state["chat_history"]:
+    if sender == "You":
+        st.markdown(f"**You:** {message}")
+    elif sender == "Bot":
+        st.markdown(f"**Bot:** {message}")
+    elif sender == "Sentiment":
+        st.markdown(f"*{message}*")
+st.markdown("</div>", unsafe_allow_html=True)
 
 # Fix the input field at the bottom using a container
-input_container = st.empty()
-with input_container:
-    st.text_input("", key="new_query", label_visibility="collapsed")
+st.markdown("""
+    <style>
+        .stTextInput {
+            position: fixed;
+            bottom: 20px;  /* Fixed 20px from the bottom */
+            left: 1;
+            right: 1;
+            z-index: 100;
+        }
+    </style>
+""", unsafe_allow_html=True)
+
+# Input field at the bottom
+st.text_input("", key="new_query", label_visibility="collapsed")
