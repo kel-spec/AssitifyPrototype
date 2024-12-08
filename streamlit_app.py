@@ -1,17 +1,18 @@
 import time
 import streamlit as st
-from transformers import pipeline
+import pickle
+import re
 
 # Set page config to make it more chat-like
 st.set_page_config(page_title="Assistify 🛒", layout="wide")
 
-# Load BERT sentiment analysis pipeline from Hugging Face
-@st.cache_resource
-def load_bert_model():
-    sentiment_analyzer = pipeline("sentiment-analysis")
-    return sentiment_analyzer
+# Load the saved Logistic Regression model
+with open('models/log_reg_model.pkl', 'rb') as model_file:
+    log_reg_loaded = pickle.load(model_file)
 
-sentiment_analyzer = load_bert_model()
+# Load the saved TF-IDF vectorizer
+with open('models/tfidf_vectorizer.pkl', 'rb') as vectorizer_file:
+    tfidf_loaded = pickle.load(vectorizer_file)
 
 # Define chatbot responses
 responses = {
@@ -47,16 +48,30 @@ def get_response(user_input):
     else:
         return responses["default"], sentiment
 
-# Function to analyze sentiment using BERT
+# Function to analyze sentiment using the saved Logistic Regression model and TF-IDF vectorizer
 def analyze_sentiment(text):
-    result = sentiment_analyzer(text)
-    label = result[0]['label']
-    if label == 'LABEL_1':  # Positive
-        return "positive"
-    elif label == 'LABEL_0':  # Negative
+    # Preprocess input text
+    text = preprocess_text_basic(text)
+    
+    # Convert the input text using the TF-IDF vectorizer
+    input_tfidf = tfidf_loaded.transform([text])
+    
+    # Predict sentiment using the Logistic Regression model
+    sentiment = log_reg_loaded.predict(input_tfidf)
+    
+    if sentiment == 0:
         return "negative"
+    elif sentiment == 4:
+        return "positive"
     else:
         return "neutral"
+
+# Preprocessing function (same as before)
+def preprocess_text_basic(text):
+    text = text.lower()
+    text = re.sub(r'http\S+', '', text)  # Remove URLs
+    text = re.sub(r'[^a-zA-Z\s]', '', text)  # Remove non-alphabet characters
+    return text
 
 # Streamlit app setup
 st.title("Assistify")
@@ -65,7 +80,7 @@ st.subheader("Your personal shopping assistant!")
 # Initialize the session state for conversation history
 if "chat_history" not in st.session_state:
     st.session_state["chat_history"] = [("Assistify", "Hi! How can I help you today?")]
-    
+
 # Initialize previous conversations list in session state
 if "previous_conversations" not in st.session_state:
     st.session_state["previous_conversations"] = []
