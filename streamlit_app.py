@@ -76,7 +76,7 @@ def get_response(user_input):
         return responses["neutral_feedback"], sentiment
     else:
         return responses["default"], sentiment
-        
+
 # Streamlit app setup
 st.title("Assistify 🛒")
 st.subheader("Your personal shopping assistant!")
@@ -84,7 +84,7 @@ st.subheader("Your personal shopping assistant!")
 # Initialize the session state for conversation history
 if "chat_history" not in st.session_state:
     st.session_state["chat_history"] = [("Assistify", "Hi! How can I help you today?")]
-    
+
 # Initialize previous conversations list in session state
 if "previous_conversations" not in st.session_state:
     st.session_state["previous_conversations"] = []
@@ -146,17 +146,32 @@ with st.sidebar:
                 st.session_state["chat_history"] = conversation
 
 # Main chat container
-st.markdown("")
+st.markdown(
+    """
+    <style>
+        .chat-history {
+            max-height: 600px;
+            overflow-y: auto;
+            padding-bottom: 50px; /* Add padding to avoid text overlapping the input box */
+        }
+    </style>
+    """, unsafe_allow_html=True
+)
 
-# Display chat history in the main chat area
-for sender, message in st.session_state["chat_history"]:
-    if sender == "You":
-        st.markdown(f"**You:** {message}")
-    elif sender == "Bot":
-        st.markdown(f"**Bot:** {message}")
-    elif sender == "Sentiment":
-        st.markdown(f"*{message}*")
+# Display chat history in the main chat area within a scrollable container
+chat_history_container = st.empty()
+with chat_history_container:
+    st.markdown("<div class='chat-history'>", unsafe_allow_html=True)
+    for sender, message in st.session_state["chat_history"]:
+        if sender == "You":
+            st.markdown(f"**You:** {message}")
+        elif sender == "Bot":
+            st.markdown(f"**Bot:** {message}")
+        elif sender == "Sentiment":
+            st.markdown(f"*{message}*")
+    st.markdown("</div>", unsafe_allow_html=True)
 
-# Fix the input field at the bottom
-with st.container():
+# Fix the input field at the bottom using a container
+input_container = st.empty()
+with input_container:
     st.text_input("", key="new_query", label_visibility="collapsed")
