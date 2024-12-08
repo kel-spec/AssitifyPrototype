@@ -3,9 +3,8 @@ import time
 import streamlit as st
 import pickle
 import re
-from textblob import TextBlob  # Using TextBlob for sentiment analysis
+from textblob import TextBlob  
 
-# Set Streamlit page configuration
 st.set_page_config(page_title="Assistify 🛒", layout="wide")
 
 # Load pre-trained models and vectorizer
@@ -40,7 +39,6 @@ def analyze_sentiment(text):
     else:
         return "neutral"
 
-# Define chatbot responses
 responses = {
     "greeting": "Hello! Here's a list of questions you can ask me: Payment, Return, Shipping, Order Status.",
     "greeting_morning": "Good morning! How can I assist you today? Feel free to ask about Payment, Return, Shipping, or Order Status.",
@@ -132,20 +130,16 @@ def get_response(user_input):
 st.title("Assistify 🛒")
 st.subheader("Your personal shopping assistant!")
 
-# Initialize the session state for conversation history
 if "chat_history" not in st.session_state:
     st.session_state["chat_history"] = [("Assistify", "Hi! How can I help you today?")]
 
-# Initialize previous conversations list in session state
 if "previous_conversations" not in st.session_state:
     st.session_state["previous_conversations"] = []
 
-# Function to start a new conversation
 def start_new_conversation():
     st.session_state["previous_conversations"].append(list(st.session_state["chat_history"]))
     st.session_state["chat_history"] = [("Assistify", "Hi! How can I help you today?")]
 
-# Capture the new user input
 if "new_query" in st.session_state:
     user_query = st.session_state["new_query"]
 else:
