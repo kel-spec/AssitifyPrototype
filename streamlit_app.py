@@ -145,7 +145,7 @@ with st.sidebar:
             if st.button(f"Conversation {idx + 1}", key=f"conv_{idx}"):
                 st.session_state["chat_history"] = conversation
 
-# Custom CSS to fix input box at the top and prevent overlap
+# Custom CSS to fix input box below the title and prevent overlap
 st.markdown("""
     <style>
         .stTextInput input {
@@ -157,17 +157,15 @@ st.markdown("""
             max-height: 400px;
             overflow-y: scroll;
             padding-right: 10px;
-            margin-top: 80px;  /* Ensures chat history doesn't overlap with the title or input */
         }
         .stTextInput {
             position: fixed;
-            top: 0;  /* This places it at the very top */
+            top: 80px;  /* Fixed input box below the title */
             left: 0;
             right: 0;
             z-index: 10;
             background-color: white; /* Keeps input box readable */
             padding: 10px;
-            margin-top: 60px;  /* Adds a bit of space to avoid overlap */
         }
     </style>
 """, unsafe_allow_html=True)
@@ -183,6 +181,6 @@ for sender, message in st.session_state["chat_history"]:
         st.markdown(f"*{message}*")
 st.markdown("</div>", unsafe_allow_html=True)
 
-# Input box that stays fixed at the top
+# Input box that stays fixed below the title
 with st.container():
     user_input = st.text_input("Type your message here:", key="new_query")
