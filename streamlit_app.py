@@ -60,31 +60,33 @@ if "new_query" not in st.session_state:
 # Input field for user query
 user_query = st.text_input("", key="new_query", label_visibility="collapsed")
 
-if user_query:
-    # Add user message to chat history
-    st.session_state["chat_history"].append(("You", user_query))
+# Button to submit the query
+if st.button("Submit Query"):
+    if user_query:
+        # Add user message to chat history
+        st.session_state["chat_history"].append(("You", user_query))
 
-    # Get the bot's response and sentiment
-    response, sentiment, score = get_response(user_query)
+        # Get the bot's response and sentiment
+        response, sentiment, score = get_response(user_query)
 
-    # Typing animation placeholder
-    typing_placeholder = st.empty()
-    typing_placeholder.markdown("**Bot is typing...**")
+        # Typing animation placeholder
+        typing_placeholder = st.empty()
+        typing_placeholder.markdown("**Bot is typing...**")
 
-    # Simulate typing animation
-    for i in range(1, len(response) + 1):
-        typing_placeholder.markdown(f"**Bot:** {response[:i]}")
-        time.sleep(0.05)
+        # Simulate typing animation
+        for i in range(1, len(response) + 1):
+            typing_placeholder.markdown(f"**Bot:** {response[:i]}")
+            time.sleep(0.05)
 
-    # Remove the typing placeholder and add bot response to chat history
-    typing_placeholder.empty()
-    st.session_state["chat_history"].append(("Bot", response))
+        # Remove the typing placeholder and add bot response to chat history
+        typing_placeholder.empty()
+        st.session_state["chat_history"].append(("Bot", response))
 
-    # Add sentiment analysis result to chat history
-    st.session_state["chat_history"].append(("Sentiment", f"{sentiment.capitalize()} (Confidence: {score:.2f})"))
+        # Add sentiment analysis result to chat history
+        st.session_state["chat_history"].append(("Sentiment", f"{sentiment.capitalize()} (Confidence: {score:.2f})"))
 
-    # Clear input box after processing the query
-    st.session_state["new_query"] = ""
+        # Clear input box after processing the query
+        st.session_state["new_query"] = ""
 
 # Display the chat history
 for sender, message in st.session_state["chat_history"]:
