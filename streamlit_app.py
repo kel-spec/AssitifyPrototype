@@ -1,48 +1,23 @@
 import datetime
 import time
 import streamlit as st
-import pickle
-import re
 from transformers import pipeline
+import re
 
-# Set the page configuration
 st.set_page_config(page_title="Assistify 🛒", layout="wide")
 
-# Load pre-trained models and vectorizer
+# Load pre-trained BERT sentiment analysis pipeline
 @st.cache_resource
-def load_models():
-    with open("models/log_reg_model.pkl", "rb") as model_file:
-        log_reg_model = pickle.load(model_file)
-    with open("models/tfidf_vectorizer.pkl", "rb") as vectorizer_file:
-        tfidf_vectorizer = pickle.load(vectorizer_file)
-    return log_reg_model, tfidf_vectorizer
+def load_bert_model():
+    return pipeline("sentiment-analysis")
 
-log_reg_model, tfidf_vectorizer = load_models()
-
-# Basic preprocessing function
-def preprocess_text_basic(text):
-    text = text.lower()
-    text = re.sub(r"http\S+", "", text)  # Remove URLs
-    text = re.sub(r"[^a-zA-Z\s]", "", text)  # Remove non-alphabet characters
-    return text
-
-# Initialize the BERT sentiment analysis pipeline
-sentiment_pipeline = pipeline("sentiment-analysis")
+sentiment_analyzer = load_bert_model()
 
 # Function to analyze sentiment using BERT
-def analyze_sentiment(text):
-    text = preprocess_text_basic(text)
-    # Use BERT model for sentiment analysis
-    result = sentiment_pipeline(text)
-    label = result[0]['label']
-    
-    # Map the labels to a sentiment string
-    if label == "LABEL_1":  # Adjust based on the model output (e.g., "LABEL_1" is usually negative)
-        return "negative"
-    elif label == "LABEL_2":  # Adjust based on the model output
-        return "neutral"
-    else:
-        return "positive"  # Assuming LABEL_0 is positive
+def analyze_sentiment_bert(text):
+    result = sentiment_analyzer(text)[0]
+    sentiment = result['label'].lower()  # 'positive' or 'negative'
+    return sentiment
 
 responses = {
     "greeting": "Hello! Here's a list of questions you can ask me: Payment, Return, Shipping, Order Status.",
@@ -85,7 +60,7 @@ responses = {
 # Function to get chatbot response based on user input and sentiment
 def get_response(user_input):
     user_input = user_input.lower()
-    sentiment = analyze_sentiment(user_input)
+    sentiment = analyze_sentiment_bert(user_input)
     
     # Time-based greeting
     current_hour = datetime.datetime.now().hour
