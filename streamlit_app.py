@@ -50,8 +50,12 @@ def get_response(user_input):
 st.title("Assistify 🛒")
 st.subheader("Your personal shopping assistant!")
 
+# Initialize session state for chat history and 'new_query' if not already initialized
 if "chat_history" not in st.session_state:
     st.session_state["chat_history"] = [("Assistify", "Hi! How can I help you today?")]
+
+if "new_query" not in st.session_state:
+    st.session_state["new_query"] = ""
 
 # Input field for user query
 user_query = st.text_input("", key="new_query", label_visibility="collapsed")
