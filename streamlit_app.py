@@ -83,7 +83,7 @@ if user_query:
     # Add sentiment analysis result to chat history
     st.session_state["chat_history"].append(("Sentiment", f"{sentiment.capitalize()} (Confidence: {score:.2f})"))
 
-    # Clear input box
+    # Clear input box after processing the query
     st.session_state["new_query"] = ""
 
 # Display the chat history
